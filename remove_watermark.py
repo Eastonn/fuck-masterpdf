@@ -19,7 +19,10 @@ import pikepdf
 def find_watermark_xobjects(page):
     """Находит Form XObject'ы с водяным знаком Master PDF Editor.
 
-    Паттерн: красный текст (1 0 0 scn), шрифт /Fm1, глифы через <xxxx>Tj.
+    Универсальный паттерн (EN/RU/любая локаль):
+    - Form XObject с красным цветом (1 0 0 rg или 1 0 0 scn)
+    - содержит только текстовый блок BT...ET с hex-глифами <xxxx>Tj
+    - обёрнут в q...Q (save/restore graphics state)
     """
     watermark_names = []
 
@@ -35,7 +38,10 @@ def find_watermark_xobjects(page):
         except Exception:
             continue
 
-        if "1 0 0 scn" in data and "/Fm1" in data and "Tj" in data:
+        has_red = "1 0 0 rg" in data or "1 0 0 scn" in data
+        has_hex_glyphs = bool(re.search(r"<[0-9A-Fa-f]{4,}>Tj", data))
+        has_text_block = "BT" in data and "ET" in data
+        if has_red and has_hex_glyphs and has_text_block:
             watermark_names.append(name)
 
     return watermark_names
