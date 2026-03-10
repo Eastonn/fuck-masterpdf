@@ -22,7 +22,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 ```bash
 git clone <url-этого-репозитория>
-cd remove-pdf-watermark
+cd fuck-masterpdf
 ```
 
 ### 3. Запустить
